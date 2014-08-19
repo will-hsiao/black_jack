@@ -83,11 +83,10 @@ host_card=[]
 player_card << card_shuffle.pop
 host_card << card_shuffle.pop
 
-loop do 
 	
 	player_card << card_shuffle.pop
 	
-	loop do
+	begin
 		player_sum=  calculate(player_card)
 		puts "Your card: #{player_card} with #{player_sum} points"
 		if player_sum>21
@@ -99,27 +98,36 @@ loop do
 			puts "Hit or Stay? (h/s)"
 			action=gets.chomp.downcase
 			if action=="h"
-				player_card << card_shuffle.pop
+				player_card << card_shuffle.pop 
 			end
 		end
-	end
+	end while action == "h"
+
 	host_card << card_shuffle.pop
-	host_sum=calculate(host_card)
-	puts "Host's card: #{host_card} with #{host_sum} points"
-	if host_sum>21
-		puts "Host busted!"
-		break
-	elsif host_sum==21
-		puts "Host got Blackjack. You LOOSE!"
-		break
-	elsif host_sum<17
-		hit()
+	
+	loop do
+		host_sum=calculate(host_card)
+		puts "Host's card: #{host_card} with #{host_sum} points"
+		if host_sum>21
+			puts "Host busted!"
+			break
+		elsif host_sum==21
+			puts "Host got Blackjack. You LOOSE!"
+			break
+		elsif host_sum<17
+			host_card << card_shuffle.pop
+		elsif host_sum > player_sum
+			puts "Host win! You LOOSE!"
+			break
+		elsif host_sum == player_sum
+			puts "You and Host are even!"
+			break
+		else 
+			puts "You WIN!"
+			break
+		end
 	end
 
-#Hit or Stay
-
-
-end
 
 
 
