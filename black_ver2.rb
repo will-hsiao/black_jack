@@ -16,9 +16,8 @@
  		end
  	end
  	aces=card.select{|c| c[1]=="ace"}
- 	aces.each do |ace|
- 		sum-=9 if sum > 21
- 	end
+ 	aces.count.times {sum-=9 if sum > 21}
+
  	return sum	
  end
 
@@ -34,12 +33,16 @@ puts "You name?"
 name=gets.chomp
 puts "Welcome #{name} !"
 
+
+begin
 #Begin Game!
+	puts "\n-----------------Welcome to Black Jack!------------------"
 #Shuffle Cards
 	card_shuffle=[]
 	player_card=[]
 	host_card=[]
 	card_new=[]
+	f_gameover = FALSE
 
 	card_new[0]=card_suite.product(card_rank)
 	card_new[1]=card_suite.product(card_rank)
@@ -47,13 +50,12 @@ puts "Welcome #{name} !"
 	puts "Deck number: #{card_new.count}"
 	
 	card_new.each do |deck|
-		p deck.count
 		card_shuffle+=deck
-		p card_shuffle.count
 	end
 	card_shuffle.shuffle!
-	puts ""
-	puts "#{card_new.count}, #{card_shuffle.count}, #{card_shuffle}"
+	puts "Card count = #{card_shuffle.count}"
+
+
 
 #Dispatch Cards
 
@@ -63,61 +65,49 @@ puts "Welcome #{name} !"
 	host_card << card_shuffle.pop
 
 	player_sum=  calculate(player_card)
-	puts "Your card: #{player_card} with #{player_sum} points"
+	puts "#{name}'s card: #{player_card} with #{player_sum} points"
 	host_sum=calculate(host_card)
 	puts "Host's card: #{host_card} with #{host_sum} points"
 
 #Player Starts
 	begin
 		
-		if player_sum>21
-			puts "You busted!"
-			break
-		elsif player_sum==21
-			puts "You got Blackjack. You WIN!"
-			break
-		else
+		if player_sum < 21
 			puts "Hit or Stay? (h/s)"
 			action=gets.chomp.downcase
 			if action=="h"
+				puts "You choose to hit"
 				player_card << card_shuffle.pop 
 				player_sum=  calculate(player_card)
 				puts "Your card: #{player_card} with #{player_sum} points"
+			else
+				puts "You choose to stay"
 			end
+		else #player_sum >= 21
+				puts "You busted!" if player_sum>21
+				puts "You got Blackjack. You WIN!" if player_sum==21
+				f_gameover=TRUE
 		end
-	end while action == "h"
+	end while action == "h" && !f_gameover
 	
 #Host starts!
-	loop do
-		if host_sum>21
-			puts "Host busted!"
-			exit
-		elsif host_sum==21
-			puts "Host got Blackjack. You LOOSE!"
-			exit
-		end
-
-		host_sum=calculate(host_card)
-
+	while f_gameover == FALSE
 		if host_sum < 17
 			host_card << card_shuffle.pop
-		else	#host_sum >17, show hand
-			if host_sum > player_sum
-				puts "Host win! You LOOSE!"
-				exit
-			elsif host_sum == player_sum
-				puts "It's a tie"
-				exit
-			else 
-				puts "You WIN!, #{name} is the BEST!"
-				exit
-			end
-
+			host_sum=calculate(host_card)
+			puts "Host's card: #{host_card} with #{host_sum} points"
+		else 
+			puts "Host busted!" if host_sum > 21
+			puts "Host got Blackjack. You LOSE!" if host_sum == 21
+			puts "Host win! You LOSE!" if host_sum > player_sum  && host_sum < 21
+			puts "It's a tie" if host_sum == player_sum && host_sum < 21
+			puts "You WIN!, #{name} is the BEST!" if host_sum < player_sum && host_sum < 21
+			f_gameover=TRUE
 		end
-		host_sum=calculate(host_card)
-		puts "Host's card: #{host_card} with #{host_sum} points"
 	end
-
+puts "Do you want to play again? (Y/N)"
+again=gets.chomp.downcase
+end while again == "y"
 
 
 
