@@ -79,7 +79,7 @@ begin
 				puts "You choose to hit"
 				player_card << card_shuffle.pop 
 				player_sum=  calculate(player_card)
-				puts "Your card: #{player_card} with #{player_sum} points"
+				puts "#{name}'s card: #{player_card} with #{player_sum} points"
 			else
 				puts "You choose to stay"
 			end
@@ -96,17 +96,22 @@ begin
 			host_card << card_shuffle.pop
 			host_sum=calculate(host_card)
 			puts "Host's card: #{host_card} with #{host_sum} points"
+		elsif host_sum < 21
+			puts "Host win! You LOSE!" if host_sum > player_sum
+			puts "It's a tie" if host_sum == player_sum
+			puts "You WIN!, #{name} is the BEST!" if host_sum < player_sum
+			f_gameover = TRUE
 		else 
 			puts "Host busted!" if host_sum > 21
 			puts "Host got Blackjack. You LOSE!" if host_sum == 21
-			puts "Host win! You LOSE!" if host_sum > player_sum  && host_sum < 21
-			puts "It's a tie" if host_sum == player_sum && host_sum < 21
-			puts "You WIN!, #{name} is the BEST!" if host_sum < player_sum && host_sum < 21
-			f_gameover=TRUE
+			f_gameover = TRUE
 		end
 	end
+
+#Game Over
 puts "Do you want to play again? (Y/N)"
 again=gets.chomp.downcase
+puts "-----------------BYE, #{name}!--------------------" if again != 'y'
 end while again == "y"
 
 
