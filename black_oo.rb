@@ -98,7 +98,6 @@ module Hand
     self.value > 21 ? TRUE : FALSE
   end
 
-
 end
 
 class Player
@@ -119,6 +118,7 @@ class Player
       return FALSE if h == 's'
     end
   end
+
 
 
 end # end class Player
@@ -154,6 +154,10 @@ class Game
 
     player.show_hand
     puts "#{player.name}'s cards has #{player.value} points"
+    if player.value == 21
+      puts "You got Blackjack"
+      winner = player.name
+    end
 
     while player.hit? do
       puts "You choose to hit"
@@ -176,6 +180,10 @@ class Game
         puts "Dealer busted!"
         winner = player.name
         break
+      end
+      if dealer.value == 21
+        puts "Dealer got blackjack"
+        winner = dealer.name
       end
     end
 
